@@ -1,0 +1,8 @@
+{
+  "entryPoints": ["src/index.ts", "src/browser/useUpload.ts"],
+  "out": "docs",
+  "plugin": ["typedoc-plugin-markdown"],
+  "excludePrivate": true,
+  "hideBreadcrumbs": true,
+  "hidePageTitle": true
+}

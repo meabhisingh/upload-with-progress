@@ -1,0 +1,116 @@
+---
+title: useUpload
+description: Upload files with progress tracking using presigned URLs
+---
+
+## Overview
+
+`useUpload` is a lightweight React hook that lets you upload files
+directly from the browser using presigned URLs, with built-in progress
+tracking and cancellation support.
+
+It is ideal for uploading large files to services like **S3, Cloudflare R2,
+or GCS** without proxying files through your backend.
+
+---
+
+## Installation
+
+```bash
+npm install upload-with-progress
+```
+
+## Basic Usage
+
+```tsx
+import React from "react";
+import { useUpload } from "upload-with-progress";
+
+function FileUploader() {
+  const { upload, progress, isUploading, error, abort } = useUpload();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // The `upload` function returns the metadata from your backend
+      const uploadedMeta = await upload(file, async () => {
+        // Fetch the presigned URL from your API
+        const response = await fetch("/api/get-presigned-url", {
+          method: "POST",
+          body: JSON.stringify({ name: file.name, type: file.type }),
+        });
+
+        // Expected response format: { presignedUrl: string, meta: any }
+        return response.json();
+      });
+
+      console.log("Upload successful!", uploadedMeta);
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+
+      {isUploading && (
+        <div className="progress-bar">
+          <p>Uploading... {progress}%</p>
+          <progress value={progress} max="100" />
+          <button onClick={abort}>Cancel</button>
+        </div>
+      )}
+
+      {error && <p className="error">Error: {error}</p>}
+    </div>
+  );
+}
+```
+
+## Backend Requirements
+
+The backend must return an object containing a presigned upload URL and metadata about the uploaded file.
+
+```ts
+{
+  presignedUrl: string;
+  meta: any; // The metadata you want to return
+}
+```
+
+Example backend response:
+
+```json
+{
+  "presignedUrl": "https://bucket.s3.amazonaws.com/...",
+  "meta": {
+    "finalFileUrl": "https://cdn.example.com/video.mp4",
+    "objectKey": "uploads/video.mp4"
+  }
+}
+```
+
+## Progress Tracking
+
+The hook exposes a `progress` state variable that is a number between 0 and 100 that represents the percentage of the file that has been uploaded.
+
+```tsx
+const { progress } = useUpload();
+```
+
+This value updates in real-time as the file is being uploaded.
+
+## Cancelling an Upload
+
+You can cancel an in-progress upload at any time.
+
+```tsx
+const { abort } = useUpload();
+
+abort();
+```
+
+This immediately stops the request and resets the upload state.
