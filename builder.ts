@@ -9,7 +9,6 @@ const defaultBuildConfig: BuildConfig = {
   outdir: "./dist",
   target: "browser",
   minify: true,
-  sourcemap: "external",
   root: "src",
   external: ["react", "react-dom"],
 };
