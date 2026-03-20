@@ -1,23 +1,5 @@
-"use client";
-
-import { useRef, useState } from "react";
-
-/**
- * Structure of the response expected from the backend `getUploadUrl` function.
- */
-export type GetUploadUrlResponse<TMeta> = {
-  /** The presigned URL used to perform the PUT request */
-  presignedUrl: string;
-  /** Custom metadata returned from the backend */
-  meta: TMeta;
-};
-
-/**
- * Function type that retrieves the upload URL and metadata.
- */
-export type GetUploadUrl<TMeta = void> = () => Promise<
-  GetUploadUrlResponse<TMeta>
->;
+import { useRef, useState, useCallback, useEffect } from "react";
+import { GetUploadUrl, GetUploadUrlResponse } from "./types";
 
 /**
  * React hook for uploading files with progress tracking.
@@ -37,6 +19,14 @@ export function useUpload<TMeta = unknown>() {
 
   const xhrRef = useRef<XMLHttpRequest | null>(null);
 
+  // Cleanup: abort any in-flight upload when the component unmounts
+  useEffect(() => {
+    return () => {
+      xhrRef.current?.abort();
+      xhrRef.current = null;
+    };
+  }, []);
+
   /**
    * Uploads a file using a presigned URL.
    *
@@ -45,73 +35,88 @@ export function useUpload<TMeta = unknown>() {
    * @returns A Promise that resolves to the metadata (`TMeta`) upon successful upload.
    * @throws Will throw an error if getting the URL fails or the upload request fails.
    */
-  const upload = async (
-    file: File,
-    getUploadUrl: GetUploadUrl<TMeta>
-  ): Promise<TMeta> => {
-    setProgress(0);
-    setError(null);
-    setIsUploading(true);
+  const upload = useCallback(
+    async (
+      file: File,
+      getUploadUrl: GetUploadUrl<TMeta>,
+    ): Promise<TMeta> => {
+      // Abort any previous in-flight upload to prevent leaking XHR references
+      if (xhrRef.current) {
+        xhrRef.current.abort();
+        xhrRef.current = null;
+      }
 
-    let uploadData: GetUploadUrlResponse<TMeta>;
+      setProgress(0);
+      setError(null);
+      setIsUploading(true);
 
-    try {
-      uploadData = await getUploadUrl();
-    } catch (err) {
-      setIsUploading(false);
-      setError("Failed to get upload URL");
-      throw err;
-    }
+      let uploadData: GetUploadUrlResponse<TMeta>;
 
-    const { presignedUrl, meta } = uploadData;
-
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhrRef.current = xhr;
-
-      xhr.open("PUT", presignedUrl, true);
-      xhr.setRequestHeader("Content-Type", file.type);
-
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          setProgress(Math.round((e.loaded / e.total) * 100));
-        }
-      };
-
-      xhr.onload = () => {
+      try {
+        uploadData = await getUploadUrl(file);
+      } catch (err) {
         setIsUploading(false);
+        setError("Failed to get upload URL");
+        throw err;
+      }
 
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(meta);
-        } else {
-          const message = xhr.statusText || "Upload failed";
-          setError(message);
-          reject(new Error(message));
-        }
-      };
+      const { presignedUrl, meta } = uploadData;
+      const contentType = file.type || "application/octet-stream";
 
-      xhr.onerror = () => {
-        setIsUploading(false);
-        setError("Upload error");
-        reject(new Error("Upload error"));
-      };
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhrRef.current = xhr;
 
-      xhr.onabort = () => {
-        setIsUploading(false);
-        setProgress(0);
-      };
+        xhr.open("PUT", presignedUrl, true);
+        xhr.setRequestHeader("Content-Type", contentType);
 
-      xhr.send(file);
-    });
-  };
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            setProgress(Math.round((e.loaded / e.total) * 100));
+          }
+        };
+
+        xhr.onload = () => {
+          xhrRef.current = null;
+          setIsUploading(false);
+
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(meta);
+          } else {
+            const message = xhr.statusText || "Upload failed";
+            setError(message);
+            reject(new Error(message));
+          }
+        };
+
+        xhr.onerror = () => {
+          xhrRef.current = null;
+          setIsUploading(false);
+          setError("Upload error");
+          reject(new Error("Upload error"));
+        };
+
+        xhr.onabort = () => {
+          xhrRef.current = null;
+          setIsUploading(false);
+          setProgress(0);
+          setError(null);
+          reject(new Error("Aborted"));
+        };
+
+        xhr.send(file);
+      });
+    },
+    [],
+  );
 
   /**
    * Cancels the ongoing upload request immediately.
    */
-  const abort = () => {
+  const abort = useCallback(() => {
     xhrRef.current?.abort();
     xhrRef.current = null;
-  };
+  }, []);
 
   return {
     upload,
