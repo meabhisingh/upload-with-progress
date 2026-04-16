@@ -111,8 +111,10 @@ export function useUpload<TMeta = unknown>(
   const onProgressRef = useRef(onProgress);
   onProgressRef.current = onProgress;
 
-  // Cleanup on unmount
+  // Track mount / unmount — must set `true` in the setup phase
+  // so that React 18 Strict Mode's cleanup → re-run cycle works.
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       xhrRef.current?.abort();

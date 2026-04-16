@@ -99,7 +99,10 @@ export function useMultipleUpload<TMeta = unknown>(
   const isMountedRef = useRef(true);
   const batchIdRef = useRef(0);
 
+  // Track mount / unmount — must set `true` in the setup phase
+  // so that React 18 Strict Mode's cleanup → re-run cycle works.
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       xhrRefs.current.forEach((xhr) => xhr.abort());
