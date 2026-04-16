@@ -2,11 +2,13 @@
 
 ***
 
-> **useUpload**\<`TMeta`\>(): `object`
+> **useUpload**\<`TMeta`\>(`options`): [`UseUploadReturn`](../interfaces/UseUploadReturn.md)\<`TMeta`\>
 
-Defined in: useUpload.ts:33
+Defined in: [src/browser/useUpload.ts:86](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L86)
 
-React hook for uploading files with progress tracking.
+React hook for uploading a single file to a presigned URL with
+real-time progress tracking, automatic retries, timeouts, and
+file validation.
 
 ## Type Parameters
 
@@ -14,65 +16,39 @@ React hook for uploading files with progress tracking.
 
 `TMeta` = `unknown`
 
-The type of metadata returned by the backend (optional).
+The shape of the metadata your backend returns.
+
+## Parameters
+
+### options
+
+[`UseUploadOptions`](../interfaces/UseUploadOptions.md) = `{}`
 
 ## Returns
 
-An object containing:
-- `upload`: A function to initiate the file upload.
-- `abort`: A function to cancel the ongoing upload.
-- `progress`: The current upload progress percentage (0-100).
-- `isUploading`: A boolean indicating if an upload is currently in progress.
-- `error`: An error message string if the upload failed, or null.
+[`UseUploadReturn`](../interfaces/UseUploadReturn.md)\<`TMeta`\>
 
-### abort()
+## Example
 
-> **abort**: () => `void`
+```tsx
+const { upload, progress, isUploading, status, error, abort, reset } =
+  useUpload<{ key: string }>({
+    maxFileSize: 10 * 1024 * 1024, // 10 MB
+    allowedTypes: ["image/*"],
+    timeout: 60_000,
+    retries: 2,
+  });
 
-Cancels the ongoing upload request immediately.
-
-#### Returns
-
-`void`
-
-### error
-
-> **error**: `null` \| `string`
-
-### isUploading
-
-> **isUploading**: `boolean`
-
-### progress
-
-> **progress**: `number`
-
-### upload()
-
-> **upload**: (`file`, `getUploadUrl`) => `Promise`\<`TMeta`\>
-
-Uploads a file using a presigned URL.
-
-#### Parameters
-
-##### file
-
-`File`
-
-The file to upload.
-
-##### getUploadUrl
-
-[`GetUploadUrl`](../type-aliases/GetUploadUrl.md)\<`TMeta`\>
-
-Function that returns the presigned URL and metadata.
-
-#### Returns
-
-`Promise`\<`TMeta`\>
-
-A Promise that resolves to the metadata (`TMeta`) upon successful upload.
-
-#### Throws
-
-Will throw an error if getting the URL fails or the upload request fails.
+const handleUpload = async (file: File) => {
+  try {
+    const meta = await upload(file, async (f) => {
+      const res = await fetch(`/api/presign?name=${f.name}`);
+      return res.json();
+    });
+    console.log("Uploaded:", meta.key);
+  } catch (err) {
+    if (err instanceof UploadError && err.code === "ABORTED") return;
+    console.error(err);
+  }
+};
+```

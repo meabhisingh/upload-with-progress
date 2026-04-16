@@ -1,3 +1,7 @@
+**upload-with-progress**
+
+***
+
 # upload-with-progress
 
 A lightweight, production-ready React hook library for handling file uploads using presigned URLs. Features built-in progress tracking, retry logic with exponential backoff, concurrency control, file validation, and metadata support. Use this generic package for uploading files to AWS S3, Cloudflare R2, Google Cloud Storage, or any other compatible storage provider effortlessly.

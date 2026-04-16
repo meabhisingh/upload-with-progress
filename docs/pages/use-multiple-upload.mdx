@@ -1,0 +1,123 @@
+---
+title: useMultipleUpload
+description: Upload multiple files concurrently with global progress tracking
+---
+
+## Overview
+
+The `useMultipleUpload` hook extends the power of the core upload engine to handle batch uploads. It maintains the identical retry logic and stability of `useUpload` while introducing powerful concurrency limits. This prevents browser thread throttling and avoids overloading your backend with 50+ concurrent presigned URL API requests.
+
+The hook tracks individual file progress, statuses, and provides a unified `overallProgress` value for your UI.
+
+---
+
+## Basic Usage
+
+```tsx
+import React, { useState } from "react";
+import { useMultipleUpload } from "upload-with-progress";
+
+export function MultiFileUploader() {
+  const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
+
+  const { upload, jobs, overallProgress, isUploadingAll, abortAll } = useMultipleUpload({
+    maxFileSize: 50 * 1024 * 1024, // 50MB per file
+    allowedTypes: ["image/*", "video/*"],
+    concurrency: 3, // Upload max 3 files at a time to prevent bottlenecking
+    retries: 3,
+  });
+
+  const handleStartUpload = async () => {
+    if (!filesToUpload.length) return;
+
+    // The results array maps 1:1 with the files array passed in.
+    const results = await upload(filesToUpload, async (file, index) => {
+      // Fetch the presigned URL for the specific file
+      const res = await fetch(`/api/presign?name=${encodeURIComponent(file.name)}`);
+      return res.json();
+    });
+    
+    const succeeded = results.filter((r) => r.status === "fulfilled");
+    console.log(`${succeeded.length}/${results.length} files uploaded successfully.`);
+  };
+
+  return (
+    <div>
+      <input 
+        type="file" 
+        multiple 
+        onChange={(e) => {
+          if (e.target.files) setFilesToUpload(Array.from(e.target.files));
+        }} 
+      />
+      
+      <button onClick={handleStartUpload} disabled={isUploadingAll || !filesToUpload.length}>
+        Upload All
+      </button>
+      
+      {isUploadingAll && (
+        <div className="batch-progress">
+          <h4>Overall Progress: {overallProgress}%</h4>
+          <button onClick={abortAll}>Cancel All</button>
+        </div>
+      )}
+
+      <ul>
+        {jobs.map((job) => (
+          <li key={job.id}>
+            <strong>{job.file.name}</strong>
+            {job.isUploading && ` - Uploading: ${job.progress}%`}
+            {job.error && <span className="error"> - Failed: {job.error}</span>}
+            {job.progress === 100 && !job.error && " - ✅ Done"}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+## Hook Options
+
+`useMultipleUpload(options)` accepts the same configuration object as `useUpload`, plus `concurrency`:
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `concurrency` | `number` | `Infinity` | **New**. Maximum number of concurrent uploads. Excess files are queued. |
+| `maxFileSize` | `number` | `Infinity` | Max size per file in bytes. |
+| `allowedTypes` | `string[]` | `undefined` | Allowed MIME types. |
+| `timeout` | `number` | `0` | Per-upload timeout in milliseconds. |
+| `retries` | `number` | `0` | Auto-retries for transient failures. |
+| `retryDelay` | `number` | `1000` | Base delay for exponential backoff in milliseconds. |
+| `headers` | `Record<string, string>` | `undefined` | Custom HTTP headers sent during the PUT request. |
+| `signal` | `AbortSignal` | `undefined` | Global `AbortSignal` to cancel the entire batch upload externally. |
+
+## Returned State
+
+The hook returns an object with the following properties:
+
+| Property | Type | Description |
+|---|---|---|
+| `upload` | `Function` | Triggers the batch upload. Takes an array of `File` objects and the `getUploadUrl` callback. |
+| `jobs` | `UploadJob[]` | The state of all processed files. Updates continuously during the upload. |
+| `overallProgress` | `number` | A weighted progress average `(loadedBytes / totalBytes) * 100`. Ranges from `0` to `100`. |
+| `isUploadingAll` | `boolean` | `true` if any file in the batch is currently uploading. |
+| `abort` | `(id: string) => void` | Abort a single file upload using its `job.id`. |
+| `abortAll` | `() => void` | Cancels all currently in-flight uploads belonging to the active batch. |
+| `reset` | `() => void` | Cancels in-flight requests and clears the `jobs` state completely. |
+
+## The `jobs` Array
+The `jobs` state array provides detailed information about every file being processed.
+
+```ts
+interface UploadJob<TMeta> {
+  id: string; // Internal UUID generated for the job
+  file: File;
+  progress: number; // 0 - 100
+  loaded: number; // Bytes uploaded
+  total: number; // Total bytes in the file
+  isUploading: boolean;
+  error: string | null;
+  meta?: TMeta; // Backend metadata once successful
+}
+```

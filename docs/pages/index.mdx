@@ -5,9 +5,8 @@ description: Upload files with progress tracking using presigned URLs
 
 ## Overview
 
-`useUpload` is a lightweight React hook that lets you upload files
-directly from the browser using presigned URLs, with built-in progress
-tracking and cancellation support.
+`useUpload` is a lightweight, production-ready React hook that lets you upload files
+directly from the browser using presigned URLs. It features built-in progress tracking, retry logic, file validation, and robust cancellation.
 
 It is ideal for uploading large files to services like **S3, Cloudflare R2,
 or GCS** without proxying files through your backend.
@@ -24,10 +23,14 @@ npm install upload-with-progress
 
 ```tsx
 import React from "react";
-import { useUpload } from "upload-with-progress";
+import { useUpload, UploadError } from "upload-with-progress";
 
 function FileUploader() {
-  const { upload, progress, isUploading, error, abort } = useUpload();
+  const { upload, progress, status, error, abort } = useUpload({
+    maxFileSize: 10 * 1024 * 1024, // 10 MB limit
+    allowedTypes: ["image/*"],
+    retries: 2, // Auto-retry on network errors or 5xx
+  });
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,7 +51,10 @@ function FileUploader() {
 
       console.log("Upload successful!", uploadedMeta);
     } catch (err) {
-      console.error("Upload failed:", err);
+      if (err instanceof UploadError) {
+        if (err.code === "ABORTED") console.log("User cancelled");
+        else console.error(`Upload error: ${err.message}`);
+      }
     }
   };
 
@@ -56,7 +62,7 @@ function FileUploader() {
     <div>
       <input type="file" onChange={handleFileChange} />
 
-      {isUploading && (
+      {status === "uploading" && (
         <div className="progress-bar">
           <p>Uploading... {progress}%</p>
           <progress value={progress} max="100" />
@@ -64,11 +70,40 @@ function FileUploader() {
         </div>
       )}
 
-      {error && <p className="error">Error: {error}</p>}
+      {status === "error" && error && <p className="error">Error: {error.message}</p>}
     </div>
   );
 }
 ```
+
+## Hook Options
+
+`useUpload(options)` takes an optional object to configure its behavior:
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `maxFileSize` | `number` | `Infinity` | Max file size in bytes. Rejects the file upfront if it exceeds this limit. |
+| `allowedTypes` | `string[]` | `undefined` | Allowed MIME types. Supports wildcards (e.g., `["image/png", "video/*"]`). |
+| `timeout` | `number` | `0` | Per-upload timeout in milliseconds. Set to `0` to disable. |
+| `retries` | `number` | `0` | Auto-retries for transient failures (Network errors, Timeouts, HTTP 429/5xx). |
+| `retryDelay` | `number` | `1000` | Base delay for exponential backoff in milliseconds. Max backoff caps at 30s. |
+| `headers` | `Record<string, string>` | `undefined` | Custom HTTP headers sent during the PUT request. |
+| `signal` | `AbortSignal` | `undefined` | Native `AbortSignal` for external cancellation (e.g., via `AbortController`). |
+| `onProgress` | `(pct: number) => void` | `undefined` | Callback fired on progress updates. Ideal for external stores (e.g., Zustand) without triggering react renders. |
+
+## Returned State
+
+The hook returns an object with the following properties:
+
+| Property | Type | Description |
+|---|---|---|
+| `upload` | `Function` | The async function to trigger the upload. Requires the `File` and a callback returning the presigned URL. |
+| `progress` | `number` | A value from `0` to `100` representing the upload progress. |
+| `status` | `UploadStatus` | `"idle" \| "uploading" \| "success" \| "error"` |
+| `isUploading` | `boolean` | Syntactic sugar for `status === "uploading"`. |
+| `error` | `UploadError \| null` | Set if the upload encounters an unrecoverable error. |
+| `abort` | `() => void` | Cancels the upload immediately. Triggers an `UploadError` with code `"ABORTED"`. |
+| `reset` | `() => void` | Resets the hook state back to `"idle"` and `progress = 0`. |
 
 ## Backend Requirements
 
@@ -92,25 +127,3 @@ Example backend response:
   }
 }
 ```
-
-## Progress Tracking
-
-The hook exposes a `progress` state variable that is a number between 0 and 100 that represents the percentage of the file that has been uploaded.
-
-```tsx
-const { progress } = useUpload();
-```
-
-This value updates in real-time as the file is being uploaded.
-
-## Cancelling an Upload
-
-You can cancel an in-progress upload at any time.
-
-```tsx
-const { abort } = useUpload();
-
-abort();
-```
-
-This immediately stops the request and resets the upload state.
