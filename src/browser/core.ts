@@ -175,6 +175,7 @@ export interface XhrCallbacks {
 export interface XhrUploadOptions {
   file: File;
   presignedUrl: string;
+  fields?: Record<string, string>;
   timeout: number;
   retries: number;
   retryDelay: number;
@@ -195,10 +196,13 @@ export type XhrUploadResult =
  * Uploads a single file to a presigned URL via XHR, with retry logic.
  * This is the low-level engine used by both hooks.
  */
-export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> {
+export function uploadFileXhr(
+  opts: XhrUploadOptions,
+): Promise<XhrUploadResult> {
   const {
     file,
     presignedUrl,
+    fields,
     timeout,
     retries,
     retryDelay,
@@ -219,7 +223,6 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
       const xhr = new XMLHttpRequest();
       callbacks.onXhrCreated(xhr);
 
-      // Wire external AbortSignal → xhr.abort()
       let signalCleanup: (() => void) | undefined;
       if (signal) {
         const onAbort = () => xhr.abort();
@@ -227,8 +230,6 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
         signalCleanup = () => signal.removeEventListener("abort", onAbort);
       }
 
-      // Guard against rare browser edge cases where multiple
-      // XHR handlers fire (e.g. abort + error) — run cleanup once.
       let done = false;
       const safeDone = () => {
         if (!done) {
@@ -238,26 +239,29 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
         }
       };
 
-      xhr.open("PUT", presignedUrl, true);
+      const isPost = Boolean(fields && Object.keys(fields).length > 0);
+      xhr.open(isPost ? "POST" : "PUT", presignedUrl, true);
 
-      // Set Content-Type only if not overridden by custom headers
-      // (case-insensitive check — HTTP headers are case-insensitive)
-      const hasContentType = Object.keys(headers ?? {}).some(
-        (k) => k.toLowerCase() === "content-type",
-      );
-      if (!hasContentType) {
-        xhr.setRequestHeader("Content-Type", contentType);
-      }
-      if (headers) {
-        for (const [key, value] of Object.entries(headers)) {
-          xhr.setRequestHeader(key, value);
+      if (!isPost) {
+        const hasContentType = Object.keys(headers ?? {}).some(
+          (k) => k.toLowerCase() === "content-type",
+        );
+
+        if (!hasContentType) {
+          xhr.setRequestHeader("Content-Type", contentType);
+        }
+
+        if (headers) {
+          for (const [key, value] of Object.entries(headers)) {
+            xhr.setRequestHeader(key, value);
+          }
         }
       }
+
       if (timeout > 0) {
         xhr.timeout = timeout;
       }
 
-      // ── Progress ───────────────────────────────────────────────
       xhr.upload.onprogress = (e) => {
         if (callbacks.isStale()) return;
         if (e.lengthComputable) {
@@ -265,7 +269,6 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
         }
       };
 
-      // ── Retry helper ───────────────────────────────────────────
       const retryOrFail = (
         code: UploadErrorCode,
         message: string,
@@ -276,9 +279,14 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
           const backoff =
             backoffOverrideMs ??
             Math.min(retryDelay * Math.pow(2, attempt), MAX_BACKOFF_MS);
+
           delay(backoff).then(() => {
             if (callbacks.isStale() || signal?.aborted) {
-              resolve({ ok: false, code: "ABORTED", message: "Upload aborted" });
+              resolve({
+                ok: false,
+                code: "ABORTED",
+                message: "Upload aborted",
+              });
               return;
             }
             attemptUpload(attempt + 1).then(resolve);
@@ -288,9 +296,11 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
         }
       };
 
-      // ── Success / HTTP error ───────────────────────────────────
+      const isFinalAttempt = attempt >= retries;
+
       xhr.onload = () => {
         safeDone();
+
         if (callbacks.isStale()) {
           resolve({ ok: false, code: "ABORTED", message: "Upload aborted" });
           return;
@@ -303,10 +313,11 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
             xhr.status === 429
               ? (parseRetryAfter(xhr) ?? undefined)
               : undefined;
-          const msg =
-            retries > 0
-              ? `Upload failed with HTTP ${xhr.status} after ${retries + 1} attempts`
-              : `Upload failed with HTTP ${xhr.status}: ${xhr.statusText || "Unknown error"}`;
+
+          const msg = isFinalAttempt
+            ? `Upload failed with HTTP ${xhr.status} after ${attempt + 1} attempts`
+            : `Upload failed with HTTP ${xhr.status}, retrying...`;
+
           retryOrFail("UPLOAD_FAILED", msg, xhr.status, retryAfterMs);
         } else {
           resolve({
@@ -318,43 +329,57 @@ export function uploadFileXhr(opts: XhrUploadOptions): Promise<XhrUploadResult> 
         }
       };
 
-      // ── Network error ──────────────────────────────────────────
       xhr.onerror = () => {
         safeDone();
+
         if (callbacks.isStale()) {
           resolve({ ok: false, code: "ABORTED", message: "Upload aborted" });
           return;
         }
-        retryOrFail(
-          "NETWORK_ERROR",
-          retries > 0
-            ? `Network error after ${retries + 1} attempts`
-            : "Network error",
-        );
+
+        const msg = isFinalAttempt
+          ? `Network error after ${attempt + 1} attempts`
+          : "Network error, retrying...";
+
+        retryOrFail("NETWORK_ERROR", msg);
       };
 
-      // ── Timeout ────────────────────────────────────────────────
       xhr.ontimeout = () => {
         safeDone();
+
         if (callbacks.isStale()) {
           resolve({ ok: false, code: "ABORTED", message: "Upload aborted" });
           return;
         }
-        retryOrFail(
-          "TIMEOUT",
-          retries > 0
-            ? `Upload timed out after ${retries + 1} attempts`
-            : `Upload timed out after ${timeout}ms`,
-        );
+
+        const msg = isFinalAttempt
+          ? `Upload timed out after ${attempt + 1} attempts`
+          : `Upload timed out after ${timeout}ms, retrying...`;
+
+        retryOrFail("TIMEOUT", msg);
       };
 
-      // ── Abort ──────────────────────────────────────────────────
       xhr.onabort = () => {
         safeDone();
         resolve({ ok: false, code: "ABORTED", message: "Upload aborted" });
       };
 
-      xhr.send(file);
+      if (isPost && fields) {
+        const formData = new FormData();
+
+        Object.entries(fields).forEach(([k, v]) => {
+          formData.append(k, v);
+        });
+
+        if (!Object.prototype.hasOwnProperty.call(fields, "Content-Type")) {
+          formData.append("Content-Type", contentType);
+        }
+
+        formData.append("file", file);
+        xhr.send(formData);
+      } else {
+        xhr.send(file);
+      }
     });
 
   return attemptUpload(0);

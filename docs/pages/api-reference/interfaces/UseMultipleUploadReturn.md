@@ -2,7 +2,7 @@
 
 ***
 
-Defined in: [src/browser/useMultipleUpload.ts:27](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L27)
+Defined in: [src/browser/useMultipleUpload.ts:15](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L15)
 
 ## Type Parameters
 
@@ -16,9 +16,7 @@ Defined in: [src/browser/useMultipleUpload.ts:27](https://github.com/meabhisingh
 
 > **abort**: (`id`) => `void`
 
-Defined in: [src/browser/useMultipleUpload.ts:37](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L37)
-
-Cancel a single upload by job ID.
+Defined in: [src/browser/useMultipleUpload.ts:23](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L23)
 
 #### Parameters
 
@@ -36,9 +34,7 @@ Cancel a single upload by job ID.
 
 > **abortAll**: () => `void`
 
-Defined in: [src/browser/useMultipleUpload.ts:39](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L39)
-
-Cancel all in-flight uploads.
+Defined in: [src/browser/useMultipleUpload.ts:24](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L24)
 
 #### Returns
 
@@ -50,9 +46,7 @@ Cancel all in-flight uploads.
 
 > **isUploadingAll**: `boolean`
 
-Defined in: [src/browser/useMultipleUpload.ts:47](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L47)
-
-Whether any upload is currently in flight.
+Defined in: [src/browser/useMultipleUpload.ts:28](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L28)
 
 ***
 
@@ -60,9 +54,7 @@ Whether any upload is currently in flight.
 
 > **jobs**: [`UploadJob`](../type-aliases/UploadJob.md)\<`TMeta`\>[]
 
-Defined in: [src/browser/useMultipleUpload.ts:43](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L43)
-
-Per-file job states.
+Defined in: [src/browser/useMultipleUpload.ts:26](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L26)
 
 ***
 
@@ -70,9 +62,7 @@ Per-file job states.
 
 > **overallProgress**: `number`
 
-Defined in: [src/browser/useMultipleUpload.ts:45](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L45)
-
-Weighted overall progress (0 – 100).
+Defined in: [src/browser/useMultipleUpload.ts:27](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L27)
 
 ***
 
@@ -80,9 +70,7 @@ Weighted overall progress (0 – 100).
 
 > **reset**: () => `void`
 
-Defined in: [src/browser/useMultipleUpload.ts:41](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L41)
-
-Reset the hook to its initial idle state, aborting all uploads.
+Defined in: [src/browser/useMultipleUpload.ts:25](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L25)
 
 #### Returns
 
@@ -94,9 +82,7 @@ Reset the hook to its initial idle state, aborting all uploads.
 
 > **upload**: (`files`, `getUploadUrl`) => `Promise`\<[`MultipleUploadResult`](../type-aliases/MultipleUploadResult.md)\<`TMeta`\>[]\>
 
-Defined in: [src/browser/useMultipleUpload.ts:29](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L29)
-
-Initiate a batch upload.
+Defined in: [src/browser/useMultipleUpload.ts:16](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L16)
 
 #### Parameters
 

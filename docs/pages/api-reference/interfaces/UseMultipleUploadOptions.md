@@ -2,9 +2,10 @@
 
 ***
 
-Defined in: [src/browser/useMultipleUpload.ts:18](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L18)
+Defined in: [src/browser/useMultipleUpload.ts:10](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L10)
 
-Configuration options accepted by `useMultipleUpload`.
+Core configuration shared by both `useUpload` and `useMultipleUpload`.
+Each hook extends this with hook-specific options.
 
 ## Extends
 
@@ -16,7 +17,7 @@ Configuration options accepted by `useMultipleUpload`.
 
 > `optional` **allowedTypes**: `string`[]
 
-Defined in: src/browser/core.ts:54
+Defined in: [src/browser/core.ts:54](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L54)
 
 Allowed MIME types (e.g. `["image/png", "image/jpeg"]`).
 Supports wildcard subtypes such as `"image/*"`.
@@ -33,20 +34,19 @@ undefined — all types allowed
 
 ***
 
+### clearOnNewUpload?
+
+> `optional` **clearOnNewUpload**: `boolean`
+
+Defined in: [src/browser/useMultipleUpload.ts:12](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L12)
+
+***
+
 ### concurrency?
 
 > `optional` **concurrency**: `number`
 
-Defined in: [src/browser/useMultipleUpload.ts:24](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useMultipleUpload.ts#L24)
-
-Maximum number of files uploaded concurrently.
-For example, `concurrency: 3` uploads at most 3 files at a time.
-
-#### Default
-
-```ts
-Infinity — all files start immediately
-```
+Defined in: [src/browser/useMultipleUpload.ts:11](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useMultipleUpload.ts#L11)
 
 ***
 
@@ -54,7 +54,7 @@ Infinity — all files start immediately
 
 > `optional` **headers**: `Record`\<`string`, `string`\>
 
-Defined in: src/browser/core.ts:81
+Defined in: [src/browser/core.ts:81](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L81)
 
 Extra headers to send with the PUT request.
 `Content-Type` is set automatically from the file's MIME type
@@ -70,7 +70,7 @@ unless you provide an explicit `Content-Type` key here.
 
 > `optional` **maxFileSize**: `number`
 
-Defined in: src/browser/core.ts:47
+Defined in: [src/browser/core.ts:47](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L47)
 
 Maximum allowed file size **in bytes**.
 
@@ -90,7 +90,7 @@ Infinity
 
 > `optional` **retries**: `number`
 
-Defined in: src/browser/core.ts:67
+Defined in: [src/browser/core.ts:67](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L67)
 
 Number of automatic retries on **transient failures**:
 network errors, timeouts, HTTP 429, and HTTP 5xx.
@@ -111,7 +111,7 @@ network errors, timeouts, HTTP 429, and HTTP 5xx.
 
 > `optional` **retryDelay**: `number`
 
-Defined in: src/browser/core.ts:74
+Defined in: [src/browser/core.ts:74](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L74)
 
 Base delay in ms for exponential back-off between retries.
 Actual delay = `retryDelay × 2^attempt` (capped at 30 s).
@@ -132,7 +132,7 @@ Actual delay = `retryDelay × 2^attempt` (capped at 30 s).
 
 > `optional` **signal**: `AbortSignal`
 
-Defined in: src/browser/core.ts:88
+Defined in: [src/browser/core.ts:88](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L88)
 
 An `AbortSignal` for external cancellation (e.g. from an `AbortController`,
 React Query, or TanStack Query). When the signal fires, the in-flight XHR
@@ -148,7 +148,7 @@ is aborted immediately. Works alongside the hook's built-in `abort()` method.
 
 > `optional` **timeout**: `number`
 
-Defined in: src/browser/core.ts:60
+Defined in: [src/browser/core.ts:60](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L60)
 
 Upload timeout **in milliseconds**. Set to `0` to disable.
 

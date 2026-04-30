@@ -4,7 +4,7 @@
 
 > **MultipleUploadResult**\<`TMeta`\> = `object`
 
-Defined in: [src/browser/types.ts:40](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L40)
+Defined in: [src/browser/types.ts:47](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L47)
 
 ## Type Parameters
 
@@ -18,7 +18,7 @@ Defined in: [src/browser/types.ts:40](https://github.com/meabhisingh/upload-with
 
 > `optional` **error**: `string`
 
-Defined in: [src/browser/types.ts:44](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L44)
+Defined in: [src/browser/types.ts:51](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L51)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [src/browser/types.ts:44](https://github.com/meabhisingh/upload-with
 
 > **file**: `File`
 
-Defined in: [src/browser/types.ts:42](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L42)
+Defined in: [src/browser/types.ts:49](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L49)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [src/browser/types.ts:42](https://github.com/meabhisingh/upload-with
 
 > `optional` **meta**: `TMeta`
 
-Defined in: [src/browser/types.ts:43](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L43)
+Defined in: [src/browser/types.ts:50](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L50)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [src/browser/types.ts:43](https://github.com/meabhisingh/upload-with
 
 > **status**: `"fulfilled"` \| `"rejected"`
 
-Defined in: [src/browser/types.ts:41](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L41)
+Defined in: [src/browser/types.ts:48](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L48)

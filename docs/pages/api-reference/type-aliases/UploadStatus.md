@@ -4,6 +4,4 @@
 
 > **UploadStatus** = `"idle"` \| `"uploading"` \| `"success"` \| `"error"`
 
-Defined in: [src/browser/useUpload.ts:22](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L22)
-
-Discriminated upload lifecycle status.
+Defined in: [src/browser/useUpload.ts:17](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L17)

@@ -2,7 +2,7 @@
 
 ***
 
-Defined in: src/browser/core.ts:22
+Defined in: [src/browser/core.ts:22](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L22)
 
 A typed error thrown (and surfaced via `error`) by the upload hooks.
 Consumers can switch on `code` for programmatic handling.
@@ -17,7 +17,7 @@ Consumers can switch on `code` for programmatic handling.
 
 > **new UploadError**(`code`, `message`, `status?`): `UploadError`
 
-Defined in: src/browser/core.ts:28
+Defined in: [src/browser/core.ts:28](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L28)
 
 #### Parameters
 
@@ -61,7 +61,7 @@ The cause of the error.
 
 > `readonly` **code**: [`UploadErrorCode`](../type-aliases/UploadErrorCode.md)
 
-Defined in: src/browser/core.ts:24
+Defined in: [src/browser/core.ts:24](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L24)
 
 Machine-readable error code.
 
@@ -107,7 +107,7 @@ Defined in: node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 > `readonly` `optional` **status**: `number`
 
-Defined in: src/browser/core.ts:26
+Defined in: [src/browser/core.ts:26](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L26)
 
 The HTTP status code, if the failure was an HTTP error.
 

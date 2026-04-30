@@ -2,7 +2,7 @@
 
 ***
 
-Defined in: [src/browser/useUpload.ts:34](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L34)
+Defined in: [src/browser/useUpload.ts:23](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L23)
 
 ## Type Parameters
 
@@ -16,9 +16,7 @@ Defined in: [src/browser/useUpload.ts:34](https://github.com/meabhisingh/upload-
 
 > **abort**: () => `void`
 
-Defined in: [src/browser/useUpload.ts:38](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L38)
-
-Cancel the in-flight upload.
+Defined in: [src/browser/useUpload.ts:25](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L25)
 
 #### Returns
 
@@ -30,9 +28,7 @@ Cancel the in-flight upload.
 
 > **error**: `null` \| [`UploadError`](../classes/UploadError.md)
 
-Defined in: [src/browser/useUpload.ts:48](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L48)
-
-The last `UploadError`, or `null`.
+Defined in: [src/browser/useUpload.ts:30](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L30)
 
 ***
 
@@ -40,9 +36,7 @@ The last `UploadError`, or `null`.
 
 > **isUploading**: `boolean`
 
-Defined in: [src/browser/useUpload.ts:44](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L44)
-
-Whether an upload is currently in flight.
+Defined in: [src/browser/useUpload.ts:28](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L28)
 
 ***
 
@@ -50,9 +44,7 @@ Whether an upload is currently in flight.
 
 > **progress**: `number`
 
-Defined in: [src/browser/useUpload.ts:42](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L42)
-
-Upload progress percentage (0 – 100).
+Defined in: [src/browser/useUpload.ts:27](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L27)
 
 ***
 
@@ -60,9 +52,7 @@ Upload progress percentage (0 – 100).
 
 > **reset**: () => `void`
 
-Defined in: [src/browser/useUpload.ts:40](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L40)
-
-Reset the hook to its initial idle state.
+Defined in: [src/browser/useUpload.ts:26](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L26)
 
 #### Returns
 
@@ -74,9 +64,7 @@ Reset the hook to its initial idle state.
 
 > **status**: [`UploadStatus`](../type-aliases/UploadStatus.md)
 
-Defined in: [src/browser/useUpload.ts:46](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L46)
-
-Lifecycle status: `idle` → `uploading` → `success` | `error`.
+Defined in: [src/browser/useUpload.ts:29](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L29)
 
 ***
 
@@ -84,9 +72,7 @@ Lifecycle status: `idle` → `uploading` → `success` | `error`.
 
 > **upload**: (`file`, `getUploadUrl`) => `Promise`\<`TMeta`\>
 
-Defined in: [src/browser/useUpload.ts:36](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L36)
-
-Initiate a file upload.
+Defined in: [src/browser/useUpload.ts:24](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L24)
 
 #### Parameters
 

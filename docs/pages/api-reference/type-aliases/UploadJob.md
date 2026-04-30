@@ -4,7 +4,7 @@
 
 > **UploadJob**\<`TMeta`\> = `object`
 
-Defined in: [src/browser/types.ts:21](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L21)
+Defined in: [src/browser/types.ts:28](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L28)
 
 Represents the state of a single file being uploaded in a batch.
 
@@ -20,7 +20,7 @@ Represents the state of a single file being uploaded in a batch.
 
 > **error**: `string` \| `null`
 
-Defined in: [src/browser/types.ts:35](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L35)
+Defined in: [src/browser/types.ts:42](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L42)
 
 Error message if this specific upload failed
 
@@ -30,7 +30,7 @@ Error message if this specific upload failed
 
 > **file**: `File`
 
-Defined in: [src/browser/types.ts:25](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L25)
+Defined in: [src/browser/types.ts:32](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L32)
 
 The file being uploaded
 
@@ -40,7 +40,7 @@ The file being uploaded
 
 > **id**: `string`
 
-Defined in: [src/browser/types.ts:23](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L23)
+Defined in: [src/browser/types.ts:30](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L30)
 
 Unique identifier for the upload job
 
@@ -50,7 +50,7 @@ Unique identifier for the upload job
 
 > **isUploading**: `boolean`
 
-Defined in: [src/browser/types.ts:33](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L33)
+Defined in: [src/browser/types.ts:40](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L40)
 
 True if the file is currently uploading
 
@@ -60,7 +60,7 @@ True if the file is currently uploading
 
 > **loaded**: `number`
 
-Defined in: [src/browser/types.ts:29](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L29)
+Defined in: [src/browser/types.ts:36](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L36)
 
 Bytes successfully loaded
 
@@ -70,7 +70,7 @@ Bytes successfully loaded
 
 > `optional` **meta**: `TMeta`
 
-Defined in: [src/browser/types.ts:37](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L37)
+Defined in: [src/browser/types.ts:44](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L44)
 
 The metadata returned upon successful upload
 
@@ -80,7 +80,7 @@ The metadata returned upon successful upload
 
 > **progress**: `number`
 
-Defined in: [src/browser/types.ts:27](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L27)
+Defined in: [src/browser/types.ts:34](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L34)
 
 Individual progress percentage (0-100)
 
@@ -90,6 +90,6 @@ Individual progress percentage (0-100)
 
 > **total**: `number`
 
-Defined in: [src/browser/types.ts:31](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/types.ts#L31)
+Defined in: [src/browser/types.ts:38](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/types.ts#L38)
 
 Total bytes of the file

@@ -4,6 +4,13 @@
 export type GetUploadUrlResponse<TMeta> = {
   /** The presigned URL used to perform the PUT request */
   presignedUrl: string;
+
+  /**
+   * Cryptographic fields required by AWS for secure POST uploads.
+   * If omitted, the engine will safely fall back to a standard PUT request.
+   */
+  fields?: Record<string, string>;
+
   /** Custom metadata returned from the backend */
   meta: TMeta;
 };

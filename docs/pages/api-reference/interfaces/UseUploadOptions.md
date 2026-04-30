@@ -2,9 +2,10 @@
 
 ***
 
-Defined in: [src/browser/useUpload.ts:25](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L25)
+Defined in: [src/browser/useUpload.ts:19](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L19)
 
-Configuration options accepted by `useUpload`.
+Core configuration shared by both `useUpload` and `useMultipleUpload`.
+Each hook extends this with hook-specific options.
 
 ## Extends
 
@@ -16,7 +17,7 @@ Configuration options accepted by `useUpload`.
 
 > `optional` **allowedTypes**: `string`[]
 
-Defined in: src/browser/core.ts:54
+Defined in: [src/browser/core.ts:54](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L54)
 
 Allowed MIME types (e.g. `["image/png", "image/jpeg"]`).
 Supports wildcard subtypes such as `"image/*"`.
@@ -37,7 +38,7 @@ undefined — all types allowed
 
 > `optional` **headers**: `Record`\<`string`, `string`\>
 
-Defined in: src/browser/core.ts:81
+Defined in: [src/browser/core.ts:81](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L81)
 
 Extra headers to send with the PUT request.
 `Content-Type` is set automatically from the file's MIME type
@@ -53,7 +54,7 @@ unless you provide an explicit `Content-Type` key here.
 
 > `optional` **maxFileSize**: `number`
 
-Defined in: src/browser/core.ts:47
+Defined in: [src/browser/core.ts:47](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L47)
 
 Maximum allowed file size **in bytes**.
 
@@ -73,11 +74,7 @@ Infinity
 
 > `optional` **onProgress**: (`progress`) => `void`
 
-Defined in: [src/browser/useUpload.ts:31](https://github.com/meabhisingh/upload-with-progress/blob/cfd27c6a23f87ccab17062f33a00c0a8eecd994e/src/browser/useUpload.ts#L31)
-
-Optional callback fired on every progress event.
-Useful when you need to feed progress into external stores (Zustand, etc.)
-without triggering a React re-render.
+Defined in: [src/browser/useUpload.ts:20](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/useUpload.ts#L20)
 
 #### Parameters
 
@@ -95,7 +92,7 @@ without triggering a React re-render.
 
 > `optional` **retries**: `number`
 
-Defined in: src/browser/core.ts:67
+Defined in: [src/browser/core.ts:67](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L67)
 
 Number of automatic retries on **transient failures**:
 network errors, timeouts, HTTP 429, and HTTP 5xx.
@@ -116,7 +113,7 @@ network errors, timeouts, HTTP 429, and HTTP 5xx.
 
 > `optional` **retryDelay**: `number`
 
-Defined in: src/browser/core.ts:74
+Defined in: [src/browser/core.ts:74](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L74)
 
 Base delay in ms for exponential back-off between retries.
 Actual delay = `retryDelay × 2^attempt` (capped at 30 s).
@@ -137,7 +134,7 @@ Actual delay = `retryDelay × 2^attempt` (capped at 30 s).
 
 > `optional` **signal**: `AbortSignal`
 
-Defined in: src/browser/core.ts:88
+Defined in: [src/browser/core.ts:88](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L88)
 
 An `AbortSignal` for external cancellation (e.g. from an `AbortController`,
 React Query, or TanStack Query). When the signal fires, the in-flight XHR
@@ -153,7 +150,7 @@ is aborted immediately. Works alongside the hook's built-in `abort()` method.
 
 > `optional` **timeout**: `number`
 
-Defined in: src/browser/core.ts:60
+Defined in: [src/browser/core.ts:60](https://github.com/meabhisingh/upload-with-progress/blob/666778dcd9a5898c68e1c1cb45b6c227095b9d11/src/browser/core.ts#L60)
 
 Upload timeout **in milliseconds**. Set to `0` to disable.
 
